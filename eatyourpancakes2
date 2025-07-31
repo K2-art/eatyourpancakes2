@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eat the Pancake</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #fff5e1;
+      overflow-x: hidden;
+    }
+    #pancake {
+      width: 200px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      animation: bounce 1s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+      background-color: #ffcf57;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #ffc02d;
+    }
+    #cutlery {
+      display: flex;
+      justify-content: center;
+      gap: 100px;
+      margin-bottom: 20px;
+      animation: shake 1.5s infinite;
+    }
+    .lang-btn {
+      margin: 10px;
+      cursor: pointer;
+      color: #444;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">Eat the Pancake</h1>
+
+  <div id="cutlery">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Fork_icon.svg/200px-Fork_icon.svg.png" width="50" alt="fork">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Knife_icon.svg/200px-Knife_icon.svg.png" width="50" alt="knife">
+  </div>
+
+  <img id="pancake" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Stack_of_pancakes.svg/2048px-Stack_of_pancakes.svg.png" alt="pancake">
+  <p id="message">Mmmh... delicious!</p>
+  <button onclick="eatPancake()" id="eatBtn">Take a bite</button>
+  <button onclick="restart()">Restart</button>
+
+  <div>
+    <span class="lang-btn" onclick="setLang('en')">English</span> |
+    <span class="lang-btn" onclick="setLang('de')">Deutsch</span>
+  </div>
+
+  <audio id="sound">
+    <source src="https://www.soundjay.com/human/mmm-delicious-01.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    let pancakeCount = 10;
+    const maxPancakes = 10;
+    const pancakeImg = document.getElementById('pancake');
+    const message = document.getElementById('message');
+    const eatBtn = document.getElementById('eatBtn');
+    const sound = document.getElementById('sound');
+    let currentLang = 'en';
+
+    function updateMessage() {
+      const messages = {
+        en: ['Mmmh... delicious!', 'Only a few left...', 'All gone!'],
+        de: ['Mmmh... lecker!', 'Nur noch wenige...', 'Alles weg!']
+      };
+      if (pancakeCount > 6) message.textContent = messages[currentLang][0];
+      else if (pancakeCount > 1) message.textContent = messages[currentLang][1];
+      else message.textContent = messages[currentLang][2];
+    }
+
+    function eatPancake() {
+      if (pancakeCount > 1) {
+        pancakeCount--;
+        pancakeImg.style.transform = `scale(${pancakeCount / maxPancakes})`;
+        pancakeImg.style.opacity = 0.8 + 0.02 * pancakeCount;
+        updateMessage();
+        sound.play();
+      } else {
+        pancakeCount = 0;
+        pancakeImg.style.display = 'none';
+        updateMessage();
+        eatBtn.disabled = true;
+      }
+    }
+
+    function restart() {
+      pancakeCount = Math.floor(Math.random() * maxPancakes) + 1;
+      pancakeImg.style.display = 'inline';
+      pancakeImg.style.transform = `scale(${pancakeCount / maxPancakes})`;
+      pancakeImg.style.opacity = 1;
+      eatBtn.disabled = false;
+      updateMessage();
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.getElementById('title').textContent = lang === 'en' ? 'Eat the Pancake' : 'Iss den Pfannkuchen';
+      eatBtn.textContent = lang === 'en' ? 'Take a bite' : 'Nimm einen Bissen';
+      updateMessage();
+    }
+  </script>
+</body>
+</html>
